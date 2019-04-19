@@ -1,20 +1,20 @@
 import json
 import hashlib
-import urllib
+import urllib.request
+import urllib.parse
+import urllib.error
 from warnings import warn
-
 from requests import request
 from requests.exceptions import HTTPError
-
 from .utils import ceil_dt, transform_datetime
 
 
-def remove_empty(d):
+def remove_empty(d: dict):
     """
     Helper function that removes all keys from a dictionary (d),
     that have an empty value.
     """
-    for key in d.keys():
+    for key in d:
         if not d[key]:
             del d[key]
     return d
@@ -82,7 +82,7 @@ class Connection(object):
 
         try:
             response.raise_for_status()
-        except HTTPError, e:
+        except HTTPError as e:
             message = response.json()['detail']
             raise ChimpyException(message)
         return response.json()
@@ -273,18 +273,18 @@ class Connection(object):
         # enforce the 100 char limit (urlencoded!!!)
         title = settings.get('title', settings['subject_line'])
 
-        if isinstance(title, unicode):
+        if isinstance(title, str):
             title = title.encode('utf-8')
-        titlelen = len(urllib.quote_plus(title))
+        titlelen = len(urllib.parse.quote_plus(title))
 
         if titlelen > 99:
             title = title[:-(titlelen - 96)] + '...'
             warn("cropped campaign title to fit the 100 character limit, new title: '%s'" % title, ChimpyWarning)
         subject = settings['subject_line']
 
-        if isinstance(subject, unicode):
+        if isinstance(subject, str):
             subject = subject.encode('utf-8')
-        subjlen = len(urllib.quote_plus(subject))
+        subjlen = len(urllib.parse.quote_plus(subject))
 
         if subjlen > 99:
             subject = subject[:-(subjlen - 96)] + '...'
@@ -351,7 +351,7 @@ class Connection(object):
     def campaign_send_test(self, cid, test_emails, send_type='html'):
         path = 'campaigns/{}/actions/test'.format(cid)
 
-        if isinstance(test_emails, basestring):
+        if isinstance(test_emails, str):
             test_emails = [test_emails]
 
         payload = {
@@ -368,7 +368,7 @@ class Connection(object):
         queries = {
             'count': limit,
             'offset': start,
-            "type" : template_type,
+            "type": template_type,
         }
         return self.make_request('GET', 'templates', queries=queries)
 

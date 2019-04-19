@@ -1,13 +1,8 @@
-**Deprecated**
-
-This project is no longer supported.
-
-Divio will undertake no further development or maintenance of this project. If you are interested in  taking responsibility for this project as its maintainer, please contact us via www.divio.com.
-
-
 =====================
-Django Mailchimp v1.3
+Django Mailchimp v1.4
 =====================
+
+This fork is maintained for Django > 2.2 and Python 3 only.
 
 This is an integrated app for Django dealing with the Mailchimp mailing list system.
 
@@ -58,48 +53,48 @@ General info:
 Mailchimp is a quite generic service. As such, it needs to store information on people who subscribe to a list,
 and that information is specific to this very list!
 
-So to help you build dynamic forms (presumabely), mailchimp added the merge_vars. They are, basically, a 
+So to help you build dynamic forms (presumabely), mailchimp added the merge_vars. They are, basically, a
 dictionnary showing infromation and meta-information defined for each piece of information.
 Here's what the default set of merge vars look like (ona  brand new list with default options)::
 
     [
         {
-        'field_type': 'email', 
-        'name': 'Email Address', 
-        'show': True, 
-        'default': None, 
-        'req': True, 
-        'public': True, 
-        'tag': 'EMAIL', 
-        'helptext': None, 
-        'order': '1', 
+        'field_type': 'email',
+        'name': 'Email Address',
+        'show': True,
+        'default': None,
+        'req': True,
+        'public': True,
+        'tag': 'EMAIL',
+        'helptext': None,
+        'order': '1',
         'size': '25'
         },{
-        'field_type': 'text', 
-        'name': 'First Name', 
-        'show': True, 
-        'default': '', 
-        'req': False, 
-        'public': True, 
-        'tag': 'FNAME', 
-        'helptext': '', 
-        'order': '2', 
+        'field_type': 'text',
+        'name': 'First Name',
+        'show': True,
+        'default': '',
+        'req': False,
+        'public': True,
+        'tag': 'FNAME',
+        'helptext': '',
+        'order': '2',
         'size': '25'
         },{
-        'field_type': 'text', 
-        'name': 'Last Name', 
-        'show': True, 
-        'default': '', 
-        'req': False, 
-        'public': True, 
-        'tag': 'LNAME', 
-        'helptext': '', 
-        'order': '3', 
+        'field_type': 'text',
+        'name': 'Last Name',
+        'show': True,
+        'default': '',
+        'req': False,
+        'public': True,
+        'tag': 'LNAME',
+        'helptext': '',
+        'order': '3',
         'size': '25'
         }
     ]
 
-As you can see, it's a list of 3 dictionnaries, each containing several fields that you should use to build your 
+As you can see, it's a list of 3 dictionnaries, each containing several fields that you should use to build your
 user interface with (since you're using this app, that means your Django form).
 
 Obtaining them:
@@ -147,5 +142,3 @@ Fire up your favorite editor and open your views.py. Put in the following snippe
 
 Of course, if you feel redirecting the user is not the right approach (handling a form might be a good idea), feel
 free to adapt this simple example to your needs :p
-
-

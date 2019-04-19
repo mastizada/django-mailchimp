@@ -1,1 +1,4 @@
-from chimpy import Connection
+from mailchimp.chimpy.chimpy import Connection
+
+
+__all__ = ['Connection']

@@ -4,18 +4,19 @@ import warnings
 
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.cache import cache
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import logout
 from django.contrib.messages import debug, info, success, warning, error, add_message
 from django.http import (
-    HttpResponse, HttpResponseForbidden, Http404, HttpResponseNotAllowed,
+    HttpResponse, HttpResponseForbidden, HttpResponseNotAllowed,
     HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponseNotModified,
     HttpResponseBadRequest, HttpResponseNotFound, HttpResponseGone,
     HttpResponseServerError
 )
 from mailchimp.settings import API_KEY, SECURE, REAL_CACHE, CACHE_TIMEOUT
+
 
 class KeywordArguments(dict):
     def __getattr__(self, attr):
@@ -35,7 +36,6 @@ class Cache(object):
             self._set = getattr(self, '_fake_set')
             self._get = getattr(self, '_fake_get')
             self._del = getattr(self, '_fake_del')
-
 
     def get(self, key, obj, *args, **kwargs):
         if self._clear_lock:
@@ -91,7 +91,8 @@ def wrap(base, parent, name, *baseargs, **basekwargs):
 
 
 def build_dict(master, klass, data, key='id'):
-    return  dict([(info[key], klass(master, info)) for info in data])
+    return dict([(info[key], klass(master, info)) for info in data])
+
 
 def _convert(name):
     s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
@@ -140,7 +141,7 @@ class Paginator(object):
                     diff = pre - this
                     break
             for i in range(1, pre + 1 + diff):
-                this = self.page +  i
+                this = self.page + i
                 if this <= self.pages_count:
                     bullets.append(Bullet(this, self.get_link(this), False))
                 else:
@@ -192,16 +193,16 @@ class BaseView(object):
     # Response to send when request is automatically declined
     auto_decline_response = 'not_found'
 
-    #===========================================================================
+    # ==========================================================================
     # Dummy Attributes (DO NOT OVERWRITE)
-    #===========================================================================
+    # ==========================================================================
     request = None
     args = tuple()
     kwargs = {}
 
-    #===========================================================================
+    # ==========================================================================
     # Internal Methods
-    #===========================================================================
+    # ==========================================================================
 
     def __init__(self, *args, **kwargs):
         # Preserve args and kwargs
@@ -238,9 +239,9 @@ class BaseView(object):
         sandbox.request = request
         return getattr(sandbox, handle_func_name)()
 
-    #===========================================================================
+    # ==========================================================================
     # Misc Helpers
-    #===========================================================================
+    # ==========================================================================
 
     def get_view_name(self):
         """
@@ -254,7 +255,6 @@ class BaseView(object):
     def logout(self):
         logout(self.request)
 
-
     def get_page_link(self, page):
         return '%s?page=%s' % (self.request.path, page)
 
@@ -264,9 +264,9 @@ class BaseView(object):
     def reverse(self, view_name, *args, **kwargs):
         return reverse(view_name, args=args or (), kwargs=kwargs or {})
 
-    #===========================================================================
+    # ==========================================================================
     # Handlers
-    #===========================================================================
+    # ==========================================================================
 
     def handle(self):
         """
@@ -274,9 +274,9 @@ class BaseView(object):
         """
         pass
 
-    #===========================================================================
+    # ==========================================================================
     # Response Helpers
-    #===========================================================================
+    # ==========================================================================
 
     def not_allowed(self, data=''):
         return HttpResponseNotAllowed(data)
@@ -287,16 +287,14 @@ class BaseView(object):
     def redirect(self, url):
         return HttpResponseRedirect(url)
 
-    def named_redirect(self, viewname, urlconf=None, args=None, kwargs=None,
-            prefix=None, current_app=None):
-        return self.redirect(reverse(view, urlconf, args, kwargs, prefix, current_app))
+    def named_redirect(self, viewname, urlconf=None, args=None, kwargs=None, prefix=None, current_app=None):
+        return self.redirect(reverse(viewname, urlconf, args, kwargs, prefix, current_app))
 
     def permanent_redirect(self, url):
         return HttpResponsePermanentRedirect(url)
 
-    def named_permanent_redirect(self, viewname, urlconf=None, args=None,
-            kwargs=None, prefix=None, current_app=None):
-        return self.permanent_redirect(reverse(view, urlconf, args, kwargs, prefix, current_app))
+    def named_permanent_redirect(self, viewname, urlconf=None, args=None, kwargs=None, prefix=None, current_app=None):
+        return self.permanent_redirect(reverse(viewname, urlconf, args, kwargs, prefix, current_app))
 
     def not_modified(self, data=''):
         return HttpResponseNotModified(data)
@@ -324,9 +322,9 @@ class BaseView(object):
             return render_to_response(self.get_template(), data, RequestContext(self.request))
         return render_to_response(self.get_template(), data)
 
-    #===========================================================================
+    # ==========================================================================
     # Message Helpers
-    #===========================================================================
+    # ==========================================================================
 
     def message_debug(self, message):
         debug(self.request, message)
@@ -417,6 +415,7 @@ def dequeue(limit=None):
     for camp in Queue.objects.dequeue(limit):
         yield camp
 
+
 def is_queued_or_sent(object):
     from mailchimp.models import Queue, Campaign
     object_id = object.pk
@@ -429,10 +428,12 @@ def is_queued_or_sent(object):
         return c[0]
     return False
 
+
 # this has to be down here to prevent circular imports
 from mailchimp.chimp import Connection
 # open a non-connected connection (lazily connect on first get_connection call)
 CONNECTION = Connection(secure=SECURE)
+
 
 def get_connection():
     if not CONNECTION.is_connected:

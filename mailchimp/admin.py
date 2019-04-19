@@ -13,7 +13,7 @@ class MailchimpAdmin(admin.ModelAdmin):
             url(r'^$',
                 VIEWS_OVERVIEW,
                 name='mailchimp_campaign_changelist',
-                kwargs={'page':'1'}),
+                kwargs={'page': '1'}),
         ]
         return urlpatterns
 

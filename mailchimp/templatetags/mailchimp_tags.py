@@ -8,6 +8,10 @@ from ..utils import is_queued_or_sent
 register = template.Library()
 
 
+def dummy_function(param):
+    return True
+
+
 def mailchimp_send_for_object(context, object):
     is_sent = is_queued_or_sent(object)
     sent_date = None
@@ -18,7 +22,7 @@ def mailchimp_send_for_object(context, object):
     if hasattr(object, 'mailchimp_allow_send'):
         objchck = object.mailchimp_allow_send
     else:
-        objchck = lambda r: True
+        objchck = dummy_function
     request = context['request']
     return {
         'content_type': ContentType.objects.get_for_model(object).pk,
@@ -31,4 +35,6 @@ def mailchimp_send_for_object(context, object):
         'admin_prefix': getattr(settings, 'ADMIN_MEDIA_PREFIX', None) or ''.join([settings.STATIC_URL, 'admin/']),
         'can_test': bool(request.user.email),
     }
+
+
 register.inclusion_tag('mailchimp/send_button.html', takes_context=True)(mailchimp_send_for_object)

@@ -2,7 +2,7 @@ import datetime
 import re
 
 from django.contrib.contenttypes.models import ContentType
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import Campaign, Queue
@@ -74,13 +74,15 @@ class TestCampaignForObjectReal(ScheduleCampaignForObject):
             for message, category, filename, lineno in self.connection.warnings.get():
                 self.message_warning("%s: %s" % (category.__name__, message))
         else:
-            self.message_error("And error has occured while trying to send the test mail to you, please try again later")
+            self.message_error(
+                "And error has occured while trying to send the test mail to you, please try again later"
+            )
         return self.json(True)
 
-    
+
 class TestCampaignForObject(ScheduleCampaignForObject):
     template = 'mailchimp/send_test.html'
-    
+
     def handle_get(self):
         referer = self.request.META.get('HTTP_REFERER') or '/'
         data = {
@@ -104,7 +106,7 @@ class CampaignInformation(MailchimpView):
             extra_info = camp.object.mailchimp_get_extra_info()
         data['extra_info'] = extra_info
         return self.render_to_response(data)
-        
+
 
 class WebHook(MailchimpBaseView):
 
@@ -143,13 +145,13 @@ class WebHook(MailchimpBaseView):
         else:
             merge_re = re.compile('data\[merges\]\[(?P<name>\w+)\]')
             merges = {}
-            for key, value in data.items():
+            for key in data:
                 match = merge_re.match(key)
                 if match:
                     name = match.group('name').lower()
                     if name in ('interests', 'fname', 'lname'):
                         continue
-                    merges[name] = value
+                    merges[name] = data[key]
             kwargs.update({
                 'email': data['data[email]'],
                 'fname': data['data[merges][FNAME]'] if 'data[merges][FNAME]' in data else '',
@@ -161,7 +163,7 @@ class WebHook(MailchimpBaseView):
         signal.send(sender=self.connection, **kwargs)
         return self.response("ok")
 
-        
+
 class Dequeue(ScheduleCampaignForObject):
 
     def handle_get(self):
@@ -171,7 +173,7 @@ class Dequeue(ScheduleCampaignForObject):
         else:
             self.message_error("An error has occured while trying to dequeue this campaign, please try again later.")
         return self.back()
-        
+
 
 class Cancel(ScheduleCampaignForObject):
 

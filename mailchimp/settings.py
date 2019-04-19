@@ -25,8 +25,10 @@ CACHE_TIMEOUT = getattr(settings, 'MAILCHIMP_CACHE_TIMEOUT', 300)
 
 WEBHOOK_KEY = getattr(settings, 'MAILCHIMP_WEBHOOK_KEY', '')
 if not WEBHOOK_KEY:
-    warnings.warn("you did not define a MAILCHIMP_WEBHOOK_KEY setting. "
-        "django-mailchimp will create a random one by itself", MailchimpWarning)
+    warnings.warn(
+        "you did not define a MAILCHIMP_WEBHOOK_KEY setting. django-mailchimp will create a random one by itself",
+        MailchimpWarning
+    )
     import string
     import random
     alphanum = string.ascii_letters + string.digits
@@ -43,7 +45,9 @@ VIEWS_INFO = getattr(settings, 'MAILCHIMP_VIEWS_INFO', 'mailchimp.views.campaign
 if not callable(VIEWS_INFO):
     VIEWS_INFO = get_callable(VIEWS_INFO)
 
-VIEWS_SCHEDULE_OBJECT = getattr(settings, 'MAILCHIMP_VIEWS_SEND_OBJECT', 'mailchimp.views.schedule_campaign_for_object')
+VIEWS_SCHEDULE_OBJECT = getattr(
+    settings, 'MAILCHIMP_VIEWS_SEND_OBJECT', 'mailchimp.views.schedule_campaign_for_object'
+)
 
 if not callable(VIEWS_SCHEDULE_OBJECT):
     VIEWS_SCHEDULE_OBJECT = get_callable(VIEWS_SCHEDULE_OBJECT)
