@@ -4,15 +4,23 @@ import re
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic.base import View
 
-from .models import Campaign, Queue
-from .settings import WEBHOOK_KEY
-from .signals import get_signal
-from .utils import BaseView, get_connection
+from mailchimp.models import Campaign, Queue
+from mailchimp.settings import WEBHOOK_KEY
+from mailchimp.signals import get_signal
+from mailchimp.connection import get_connection
+
+
+class BaseView(View):
+    def __init__(self, *args, **kwargs):
+        super(BaseView, self).__init__(*args, **kwargs)
+
+    def get_page_link(self, page):
+        return '%s?page=%s' % (self.request.path, page)
 
 
 class MailchimpBaseView(BaseView):
-
     @property
     def connection(self):
         return get_connection()
@@ -35,12 +43,8 @@ class Overview(MailchimpView):
         }
         return self.render_to_response(data)
 
-    def get_page_link(self, page):
-        return self.reverse('mailchimp_overview', page=page)
-
 
 class ScheduleCampaignForObject(MailchimpView):
-
     def auth_check(self):
         basic = super(ScheduleCampaignForObject, self).auth_check()
         if not basic:
@@ -184,11 +188,11 @@ class Cancel(ScheduleCampaignForObject):
         return self.back()
 
 
-webhook = csrf_exempt(WebHook())
-dequeue = Dequeue()
-cancel = Cancel()
-campaign_information = CampaignInformation()
-overview = Overview()
-schedule_campaign_for_object = ScheduleCampaignForObject()
-test_campaign_for_object = TestCampaignForObject()
-test_real = TestCampaignForObjectReal()
+webhook = csrf_exempt(WebHook.as_view())
+dequeue = Dequeue.as_view()
+cancel = Cancel.as_view()
+campaign_information = CampaignInformation.as_view()
+overview = Overview.as_view()
+schedule_campaign_for_object = ScheduleCampaignForObject.as_view()
+test_campaign_for_object = TestCampaignForObject.as_view()
+test_real = TestCampaignForObjectReal.as_view()

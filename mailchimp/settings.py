@@ -1,16 +1,9 @@
-import importlib
 import warnings
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
-from .exceptions import MailchimpWarning
-
-
-def get_callable(string_to_callable):
-    module_name, object_name = string_to_callable.rsplit('.', 1)
-    module = importlib.import_module(module_name)
-    return getattr(module, object_name)
+from mailchimp.exceptions import MailchimpWarning
 
 
 API_KEY = getattr(settings, 'MAILCHIMP_API_KEY', None)
@@ -37,22 +30,10 @@ if not WEBHOOK_KEY:
 
 VIEWS_OVERVIEW = getattr(settings, 'MAILCHIMP_VIEWS_OVERVIEW', 'mailchimp.views.overview')
 
-if not callable(VIEWS_OVERVIEW):
-    VIEWS_OVERVIEW = get_callable(VIEWS_OVERVIEW)
-
 VIEWS_INFO = getattr(settings, 'MAILCHIMP_VIEWS_INFO', 'mailchimp.views.campaign_information')
-
-if not callable(VIEWS_INFO):
-    VIEWS_INFO = get_callable(VIEWS_INFO)
 
 VIEWS_SCHEDULE_OBJECT = getattr(
     settings, 'MAILCHIMP_VIEWS_SEND_OBJECT', 'mailchimp.views.schedule_campaign_for_object'
 )
 
-if not callable(VIEWS_SCHEDULE_OBJECT):
-    VIEWS_SCHEDULE_OBJECT = get_callable(VIEWS_SCHEDULE_OBJECT)
-
 VIEWS_TEST_OBJECT = getattr(settings, 'MAILCHIMP_VIEWS_TEST_OBJECT', 'mailchimp.views.test_campaign_for_object')
-
-if not callable(VIEWS_TEST_OBJECT):
-    VIEWS_TEST_OBJECT = get_callable(VIEWS_TEST_OBJECT)
