@@ -117,7 +117,7 @@ class Campaign(BaseChimpObject):
         self._content = None
         self.frozen_info = info
 
-    def __unicode__(self):
+    def __str__(self):
         return self.subject
 
     @property
@@ -171,7 +171,7 @@ class Member(BaseChimpObject):
     def __init__(self, master, info):
         super(Member, self).__init__(master, info)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.email
 
     def __getattr__(self, attr):
@@ -315,7 +315,7 @@ class List(BaseChimpObject):
     def get_merges(self):
         return self.cache.get('merges', self.master.con.list_merge_vars, self.id)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_member(self, email):
