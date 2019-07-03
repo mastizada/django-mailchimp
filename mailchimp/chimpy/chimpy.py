@@ -14,10 +14,11 @@ def remove_empty(d: dict):
     Helper function that removes all keys from a dictionary (d),
     that have an empty value.
     """
+    result = d.copy()
     for key in d:
         if not d[key]:
-            del d[key]
-    return d
+            del result[key]
+    return result
 
 
 class ChimpyException(Exception):
